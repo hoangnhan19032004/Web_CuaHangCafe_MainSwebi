@@ -75,7 +75,7 @@ Hai phần chính của hệ thống:
    * Mở `Views/Shared/_Layout.cshtml` và đổi `<title>`, logo và tên thương hiệu thành `Swebi Coffee`.
 2. **Thay text in README / About / Footer:**
 
-   * Tìm và thay tất cả chuỗi `The Space Coffee` thành `Swebi Coffee` (IDE: tìm & thay toàn cục).
+   * Tìm và thay tất cả chuỗi thành `Swebi Coffee` (IDE: tìm & thay toàn cục).
 3. **Cập nhật tập tin cấu hình (nếu cần):**
 
    * `appsettings.json` (tên database nếu muốn đổi), `appsettings.Development.json`.
