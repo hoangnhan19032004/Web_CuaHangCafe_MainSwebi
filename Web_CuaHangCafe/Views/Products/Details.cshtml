@@ -1,0 +1,173 @@
+﻿@model Web_CuaHangCafe.Models.TbSanPham
+
+@{
+    ViewData["Title"] = Model.TenSanPham;
+    ViewData["Products"] = "active";
+}
+
+<!-- Breadcrumb Begin -->
+<div class="breadcrumb-option">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb__links">
+                    <a asp-controller="Home" asp-action="Index"><i class="fas fa-home"></i> Trang chủ</a>
+                    <a asp-controller="Products" asp-action="Index">Sản phẩm</a>
+                    <span>@Model.TenSanPham</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+<!-- Product Details Section Begin -->
+<section class="product-details spad">
+    <div class="container">
+        <div class="row">
+            <!-- Hình ảnh sản phẩm -->
+            <div class="col-lg-6">
+                <div class="product__details__pic">
+                    <img class="product__big__img w-100" src="@Url.Content("~/img/products/" + Model.HinhAnh)" alt="@Model.TenSanPham" />
+                </div>
+            </div>
+
+            <!-- Thông tin sản phẩm -->
+            <div class="col-lg-6">
+                <div class="product__details__text">
+                    <h3>@Model.TenSanPham</h3>
+                    <div class="product__details__price" id="priceDisplay">
+                        @(Model.GiaBan?.ToString("n0") ?? "0") ₫
+                    </div>
+
+                    <!-- Chọn size -->
+                    @if (Model.TbSanPhamSizes != null && Model.TbSanPhamSizes.Any())
+                    {
+                        <div class="product__details__option mb-3">
+                            <strong>Chọn size:</strong>
+                            <div class="product__details__option__size mt-2">
+                                @foreach (var item in Model.TbSanPhamSizes)
+                                {
+                                    var size = item.TbSize;
+                                    var giaTang = item.GiaTang ?? 0;
+                                    <input type="radio" class="btn-check" name="selectedSize" id="size_@size.MaSize" value="@size.MaSize" autocomplete="off">
+                                    <label class="btn btn-outline-dark btn-sm me-2 mb-2" for="size_@size.MaSize">
+                                        @size.TenSize @(giaTang > 0 ? $"(+{giaTang.ToString("n0")} ₫)" : "")
+                                    </label>
+                                }
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning p-2 mb-3">Sản phẩm này hiện không có size để chọn.</div>
+                    }
+
+                    <!-- Form thêm vào giỏ -->
+                    <form id="addToCartForm" method="get" asp-controller="Cart" asp-action="Add">
+                        <input type="hidden" name="id" value="@Model.MaSanPham" />
+                        <input type="hidden" name="size" id="selectedSizeHidden" />
+                        <input type="hidden" name="price" id="selectedPriceHidden" />
+
+                        <div class="product__details__button">
+                            <div class="mb-3">
+                                <label class="form-label">Số lượng:</label>
+                                <div class="input-group" style="max-width: 160px;">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="changeQuantity(-1)">-</button>
+                                    <input type="number" class="form-control text-center" name="quantity" id="quantityInput" value="1" min="1">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="changeQuantity(1)">+</button>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-dark">
+                                <i class="fa-solid fa-cart-shopping"></i> Thêm vào giỏ
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Mô tả thêm -->
+                    <div class="product__details__widget mt-4">
+                        <ul>
+                            <li><span>Tên sản phẩm:</span> <p>@Model.TenSanPham</p></li>
+                            <li><span>Quy cách:</span> <p>Chưa có thông tin</p></li>
+                            <li><span>Thành phần:</span> <p>Chưa có thông tin</p></li>
+                            <li><span>Hạn sử dụng:</span> <p>Chưa có thông tin</p></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab mô tả -->
+            <div class="col-lg-12 mt-5">
+                <div class="product__details__tab">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-bs-toggle="pill" href="#tabs-1" role="tab">Mô tả</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="pill" href="#tabs-2" role="tab">Thông tin chi tiết</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="tabs-1" role="tabpanel">
+                            <h6>Mô tả</h6>
+                            <p>@Model.MoTa</p>
+                        </div>
+                        <div class="tab-pane fade" id="tabs-2" role="tabpanel">
+                            <h6>Thông tin chi tiết</h6>
+                            <p>Chưa có thông tin</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+<!-- Product Details Section End -->
+@section Scripts {
+    <script>
+        const originalPrice = @Model.GiaBan ?? 0;
+        const sizePriceMap = {};
+
+        // Gán giá tăng theo size
+        @if (Model.TbSanPhamSizes != null)
+        {
+            foreach (var item in Model.TbSanPhamSizes)
+            {
+                <text>sizePriceMap["@item.TbSize.MaSize"] = @item.GiaTang ?? 0;</text>
+            }
+        }
+
+        // Bắt sự kiện chọn size
+        document.querySelectorAll('input[name="selectedSize"]').forEach(radio => {
+            radio.addEventListener('change', function () {
+                const selectedSizeId = this.value;
+                const giaTang = sizePriceMap[selectedSizeId] || 0;
+                const newPrice = originalPrice + giaTang;
+
+                document.getElementById("priceDisplay").textContent = newPrice.toLocaleString("vi-VN") + " ₫";
+                document.getElementById("selectedSizeHidden").value = selectedSizeId;
+                document.getElementById("selectedPriceHidden").value = newPrice;
+            });
+        });
+
+        // Tăng / giảm số lượng
+        function changeQuantity(amount) {
+            const input = document.getElementById("quantityInput");
+            let current = parseInt(input.value);
+            if (!isNaN(current)) {
+                current += amount;
+                if (current < 1) current = 1;
+                input.value = current;
+            }
+        }
+
+        // Ngăn submit nếu chưa chọn size
+        document.getElementById("addToCartForm").addEventListener("submit", function (e) {
+            const selected = document.querySelector('input[name="selectedSize"]:checked');
+            if (!selected) {
+                alert("Vui lòng chọn size trước khi thêm vào giỏ hàng.");
+                e.preventDefault();
+            }
+        });
+    </script>
+}

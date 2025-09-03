@@ -1,0 +1,164 @@
+﻿@model Web_CuaHangCafe.ViewModels.EditBillViewModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Chỉnh sửa hóa đơn";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container">
+    <h3 class="mt-3 mb-4">Chỉnh sửa hóa đơn: @Model.HoaDon.SoHoaDon</h3>
+    <form asp-action="Edit" method="post" id="billForm">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="HoaDon.MaHoaDon" />
+        <input type="hidden" asp-for="HoaDon.CustomerId" /> <!-- Để tránh null khi save -->
+
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label asp-for="HoaDon.SoHoaDon" class="form-label">Số hóa đơn</label>
+                <input asp-for="HoaDon.SoHoaDon" class="form-control" readonly />
+            </div>
+            <div class="col-md-4">
+                <label asp-for="HoaDon.NgayBan" class="form-label">Ngày bán</label>
+                <input asp-for="HoaDon.NgayBan" class="form-control" readonly />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Tổng tiền</label>
+                <input class="form-control" value="@Model.HoaDon.TongTien?.ToString("N0") ₫" readonly />
+            </div>
+        </div>
+
+        <h5 class="mt-4">Danh sách món nước đã đặt</h5>
+        @if (TempData["error"] != null)
+        {
+            <div class="alert alert-danger">@TempData["error"]</div>
+        }
+        @if (TempData["success"] != null)
+        {
+            <div class="alert alert-success">@TempData["success"]</div>
+        }
+        <table class="table table-bordered mt-2">
+            <thead class="table-dark">
+                <tr>
+                    <th>Tên món</th>
+                    <th>Size</th>
+                    <th>Số lượng</th>
+                    <th>Đơn giá</th>
+                    <th>Tổng</th>
+                    <th>Xóa</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.ChiTietHienTai.Count; i++)
+                {
+                    var sp = Model.DanhSachSanPham.FirstOrDefault(p => p.MaSanPham == Model.ChiTietHienTai[i].ProductId);
+                    var tenSp = sp?.TenSanPham ?? "Không rõ";
+
+                    var soLuong = Model.ChiTietHienTai[i].SoLuong ?? 0;
+                    var giaBan = Model.ChiTietHienTai[i].GiaBan ?? 0;
+                    var thanhTien = soLuong * giaBan;
+
+                    <tr>
+                        <td>@tenSp</td>
+                        <td>@Model.ChiTietHienTai[i].Size</td>
+                        <td>
+                            <input type="number" name="UpdatedQuantities[@i]" value="@soLuong" min="1"
+                                   class="form-control form-control-sm quantity-input"
+                                   data-index="@i" />
+                        </td>
+                        <td>@giaBan.ToString("N0") ₫</td>
+                        <td>@thanhTien.ToString("N0") ₫</td>
+                        <td>
+                            <button type="submit" name="removeIndex" value="@i" class="btn btn-sm btn-danger auto-submit" title="Xóa món">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <h5 class="mt-4">Thêm món nước mới</h5>
+        <div class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label">Chọn món</label>
+                <select id="productSelect" asp-for="NewProduct.ProductId" class="form-select">
+                    <option value="">-- Chọn sản phẩm --</option>
+                    @foreach (var sp in Model.DanhSachSanPham)
+                    {
+                        <option value="@sp.MaSanPham" data-price="@sp.GiaBan">@sp.TenSanPham</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Size</label>
+                <select id="sizeSelect" asp-for="NewProduct.Size" class="form-select">
+                    <option value="M" data-extra="0">M</option>
+                    <option value="L" data-extra="10000">L</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Số lượng</label>
+                <input id="quantityInput" asp-for="NewProduct.SoLuong" class="form-control" min="1" value="1" />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Đơn giá</label>
+                <input id="priceInput" asp-for="NewProduct.GiaBan" class="form-control" readonly />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Tổng tiền</label>
+                <input id="totalInput" class="form-control" readonly />
+            </div>
+            <div class="col-md-2 mt-2">
+                <button type="submit" name="action" value="add" class="btn btn-primary w-100">
+                    <i class="fas fa-plus-circle me-1"></i> Thêm
+                </button>
+            </div>
+        </div>
+
+        <div class="mt-4 d-flex justify-content-end">
+            <button type="submit" name="action" value="save" class="btn btn-success">
+                <i class="fas fa-save me-1"></i> Lưu hóa đơn
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        const productSelect = document.getElementById("productSelect");
+        const sizeSelect = document.getElementById("sizeSelect");
+        const quantityInput = document.getElementById("quantityInput");
+        const priceInput = document.getElementById("priceInput");
+        const totalInput = document.getElementById("totalInput");
+        const billForm = document.getElementById("billForm");
+
+        function updatePriceAndTotal() {
+            let basePrice = parseInt(productSelect.selectedOptions[0]?.dataset.price || 0);
+            let extraPrice = parseInt(sizeSelect.selectedOptions[0]?.dataset.extra || 0);
+            let finalPrice = basePrice + extraPrice;
+            priceInput.value = finalPrice;
+
+            let quantity = parseInt(quantityInput.value) || 1;
+            totalInput.value = (finalPrice * quantity).toLocaleString('vi-VN') + " ₫";
+        }
+
+        productSelect.addEventListener("change", updatePriceAndTotal);
+        sizeSelect.addEventListener("change", updatePriceAndTotal);
+        quantityInput.addEventListener("input", updatePriceAndTotal);
+
+        // Tự submit khi đổi số lượng món
+        document.querySelectorAll(".quantity-input").forEach(input => {
+            input.addEventListener("change", function () {
+                let hiddenAction = document.createElement("input");
+                hiddenAction.type = "hidden";
+                hiddenAction.name = "action";
+                hiddenAction.value = "update";
+                billForm.appendChild(hiddenAction);
+                billForm.submit();
+            });
+        });
+
+        updatePriceAndTotal();
+    </script>
+}

@@ -1,0 +1,87 @@
+﻿@using Web_CuaHangCafe.Models
+@using Web_CuaHangCafe.ViewModels
+@using X.PagedList.Mvc.Core
+@model X.PagedList.IPagedList<ProductViewModel>
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Danh sách sản phẩm";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container mb-4">
+    <div class="row align-items-center mb-3">
+        <div class="col-lg-8 col-md-12">
+            <h3 class="fw-semibold text-dark">Danh sách sản phẩm</h3>
+        </div>
+        <div class="col-lg-4 col-md-12">
+            @using (Html.BeginForm("Search", "HomeAdmin", FormMethod.Get))
+            {
+                <div class="input-group">
+                    <input type="text" class="form-control" name="search" placeholder="Tìm kiếm..." autocomplete="off" />
+                    <button class="btn btn-outline-secondary" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-plus-circle"></i> Thêm mới
+        </a>
+        <span id="status-message" class="text-success">@TempData["Message"]</span>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered align-middle text-center">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col">Mã sản phẩm</th>
+                    <th scope="col">Tên sản phẩm</th>
+                    <th scope="col">Hình ảnh</th>
+                    <th scope="col">Loại sản phẩm</th>
+                    <th scope="col">Giá bán</th>
+                    <th scope="col">Ghi chú</th>
+                    <th scope="col">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.MaSanPham</td>
+                        <td>@item.TenSanPham</td>
+                        <td>
+                            <img src="@Url.Content("~/img/products/" + item.HinhAnh)" class="img-thumbnail" style="width: 80px; height: 80px; object-fit: cover;" />
+                        </td>
+                        <td>@item.LoaiSanPham</td>
+                        <td>@(item.GiaBan?.ToString("n0")) &#8363;</td>
+                        <td>@item.GhiChu</td>
+                        <td>
+                            <a class="btn btn-info btn-sm me-1" asp-action="Details" asp-route-id="@item.MaSanPham" asp-route-name="@item.TenSanPham">
+                                <i class="fas fa-eye"></i> Xem
+                            </a>
+                            <a class="btn btn-success btn-sm me-1" asp-action="Edit" asp-route-id="@item.MaSanPham" asp-route-name="@item.TenSanPham">
+                                <i class="fas fa-edit"></i> Sửa
+                            </a>
+                            <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.MaSanPham">
+                                <i class="fas fa-trash-alt"></i> Xoá
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-center mt-4">
+        @Html.PagedListPager(Model, page => Url.Action("Index", new { page = page }), new PagedListRenderOptions()
+   {
+       MaximumPageNumbersToDisplay = 5,
+       LiElementClasses = new List<string> { "page-item" },
+       PageClasses = new List<string> { "page-link" }
+   })
+    </div>
+</div>

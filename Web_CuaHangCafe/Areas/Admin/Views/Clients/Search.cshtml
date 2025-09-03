@@ -1,0 +1,73 @@
+﻿@using Web_CuaHangCafe.Models
+@using X.PagedList.Mvc.Core
+@model X.PagedList.IPagedList<TbKhachHang>
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Kết quả tìm kiếm";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container mb-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
+        <h3 class="fw-semibold text-dark">Kết quả tìm kiếm: <span class="text-muted">@ViewBag.search</span></h3>
+
+        <form asp-action="Search" asp-controller="Clients" method="get" class="d-flex" role="search">
+            <input type="text" name="search" class="form-control me-2 shadow-sm" placeholder="Tìm theo tên hoặc SĐT..." />
+            <button type="submit" class="btn btn-outline-primary shadow-sm">
+                <i class="fas fa-search me-1"></i>
+            </button>
+        </form>
+    </div>
+
+    <div class="card shadow-sm rounded p-3">
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Số điện thoại</th>
+                        <th>Tên khách hàng</th>
+                        <th>Địa chỉ</th>
+                        <th class="text-center">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.SdtKhachHang</td>
+                                <td>@item.TenKhachHang</td>
+                                <td>@item.DiaChi</td>
+                                <td class="text-center">
+                                    <a asp-action="Edit" asp-route-id="@item.SdtKhachHang" class="btn btn-sm btn-success me-1">
+                                        <i class="fas fa-edit"></i> Sửa
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.SdtKhachHang" class="btn btn-sm btn-danger">
+                                        <i class="fas fa-trash-alt"></i> Xoá
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">Không tìm thấy khách hàng phù hợp.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="d-flex justify-content-center mt-3">
+            @Html.PagedListPager(Model, page => Url.Action("Search", new { page, search = ViewBag.search }), new PagedListRenderOptions
+       {
+           MaximumPageNumbersToDisplay = 5,
+           LiElementClasses = new List<string> { "page-item" },
+           PageClasses = new List<string> { "page-link" }
+       })
+        </div>
+    </div>
+</div>

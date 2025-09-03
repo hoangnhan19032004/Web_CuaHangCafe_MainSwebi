@@ -1,0 +1,40 @@
+﻿@model Web_CuaHangCafe.Models.TbNhomSanPham
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Sửa nhóm sản phẩm";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container mb-4">
+    <div class="row mb-3">
+        <div class="col-12">
+            <h3 class="fw-semibold text-dark">
+                Sửa nhóm sản phẩm: <span class="text-muted">@ViewBag.name</span>
+            </h3>
+        </div>
+    </div>
+
+    <div class="card shadow-sm rounded p-4">
+        <form asp-action="Edit" class="needs-validation" novalidate>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <input type="hidden" asp-for="MaNhomSp" />
+
+            <div class="mb-3">
+                <label asp-for="TenNhomSp" class="form-label">Tên nhóm sản phẩm</label>
+                <input asp-for="TenNhomSp" class="form-control" />
+                <span asp-validation-for="TenNhomSp" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex justify-content-between mt-4">
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Quay về
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Lưu thay đổi
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

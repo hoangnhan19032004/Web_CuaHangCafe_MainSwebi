@@ -1,0 +1,79 @@
+﻿@using Web_CuaHangCafe.Models
+@using X.PagedList.Mvc.Core
+@model X.PagedList.IPagedList<TbSanPham>
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Kết quả tìm kiếm";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container mb-4">
+    <div class="row align-items-center mb-3">
+        <div class="col-lg-8 col-md-12">
+            <h3 class="fw-semibold text-dark">
+                Kết quả tìm kiếm:
+                <span class="text-muted text-capitalize">@ViewBag.search</span>
+            </h3>
+        </div>
+        <div class="col-lg-4 col-md-12">
+            @using (Html.BeginForm("Search", "HomeAdmin", FormMethod.Get))
+            {
+                <div class="input-group">
+                    <input type="text" class="form-control" name="search" placeholder="Tìm kiếm..." autocomplete="off" />
+                    <button class="btn btn-outline-secondary" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered align-middle text-center">
+            <thead class="table-light">
+                <tr>
+                    <th>Mã sản phẩm</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Giá bán</th>
+                    <th>Loại sản phẩm</th>
+                    <th>Ghi chú</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.MaSanPham</td>
+                        <td>@item.TenSanPham</td>
+                        <td>@(item.GiaBan?.ToString("n0")) &#8363;</td>
+                        <td>@item.MaNhomSp</td>
+                        <td>@item.GhiChu</td>
+                        <td>
+                            <a class="btn btn-info btn-sm me-1" asp-action="Details" asp-route-id="@item.MaSanPham">
+                                <i class="fas fa-eye"></i> Chi tiết
+                            </a>
+                            <a class="btn btn-success btn-sm me-1" asp-action="Edit" asp-route-id="@item.MaSanPham">
+                                <i class="fas fa-edit"></i> Sửa
+                            </a>
+                            <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.MaSanPham">
+                                <i class="fas fa-trash-alt"></i> Xoá
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-center mt-4">
+        @Html.PagedListPager(Model, page => Url.Action("Search", new { page = page, search = ViewBag.search }),
+                 new PagedListRenderOptions()
+        {
+            MaximumPageNumbersToDisplay = 5,
+            LiElementClasses = new List<string> { "page-item" },
+            PageClasses = new List<string> { "page-link" }
+        })
+    </div>
+</div>

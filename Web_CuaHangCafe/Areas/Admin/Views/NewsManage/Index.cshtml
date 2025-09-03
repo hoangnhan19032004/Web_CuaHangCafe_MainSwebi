@@ -1,0 +1,78 @@
+﻿@using Web_CuaHangCafe.Models
+@using X.PagedList.Mvc.Core
+@model X.PagedList.IPagedList<TbTinTuc>
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Quản lí tin tức";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container mb-4">
+    <div class="row align-items-center mb-3">
+        <div class="col-lg-8 col-md-12">
+            <h3 class="fw-semibold text-dark">Quản lí tin tức</h3>
+        </div>
+        <div class="col-lg-4 col-md-12">
+            <form asp-action="Search" asp-controller="NewsManage" method="get" class="d-flex">
+                <input type="text" name="search" class="form-control me-2" placeholder="Tìm kiếm..." autocomplete="off" />
+                <button class="btn btn-outline-primary" type="submit"><i class="fa fa-search"></i></button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="mb-3 d-flex justify-content-between align-items-center">
+                <a asp-action="Create" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Thêm mới
+                </a>
+                <span id="status-message" class="text-success fw-semibold">@TempData["Message"]</span>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width:10%">Mã</th>
+                            <th style="width:45%">Tiêu đề</th>
+                            <th style="width:20%">Ngày đăng</th>
+                            <th style="width:25%">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.MaTinTuc</td>
+                                <td>@item.TieuDe</td>
+                                <td>@(item.NgayDang?.ToString("dd/MM/yyyy"))</td>
+                                <td>
+                                    <a class="btn btn-sm btn-outline-info me-1" asp-action="Details" asp-route-id="@item.MaTinTuc" asp-route-name="@item.TieuDe">
+                                        <i class="fas fa-eye"></i> Xem
+                                    </a>
+                                    <a class="btn btn-sm btn-outline-success me-1" asp-action="Edit" asp-route-id="@item.MaTinTuc" asp-route-name="@item.TieuDe">
+                                        <i class="fas fa-edit"></i> Sửa
+                                    </a>
+                                    <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@item.MaTinTuc">
+                                        <i class="fas fa-trash-alt"></i> Xoá
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="d-flex justify-content-center mt-4">
+                @Html.PagedListPager(Model, page => Url.Action("Index", new { page }),
+                         new PagedListRenderOptions
+                {
+                    MaximumPageNumbersToDisplay = 5,
+                    LiElementClasses = new List<string> { "page-item" },
+                    PageClasses = new List<string> { "page-link" }
+                })
+            </div>
+        </div>
+    </div>
+</div>

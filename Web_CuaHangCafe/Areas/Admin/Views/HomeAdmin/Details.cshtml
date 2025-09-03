@@ -1,0 +1,55 @@
+﻿@model Web_CuaHangCafe.ViewModels.ProductViewModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = ViewBag.name;
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container mb-4">
+    <div class="row mb-3">
+        <div class="col-lg-8 col-md-12">
+            <h3 class="fw-semibold text-dark">
+                Chi tiết sản phẩm: <span class="text-muted">@ViewBag.name</span>
+            </h3>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-3">Mã sản phẩm</dt>
+                <dd class="col-sm-9">@Model.MaSanPham</dd>
+
+                <dt class="col-sm-3">Tên sản phẩm</dt>
+                <dd class="col-sm-9">@Model.TenSanPham</dd>
+
+                <dt class="col-sm-3">Giá bán</dt>
+                <dd class="col-sm-9">@Model.GiaBan?.ToString("n0") &#8363;</dd>
+
+                <dt class="col-sm-3">Loại sản phẩm</dt>
+                <dd class="col-sm-9">@Model.LoaiSanPham</dd>
+
+                <dt class="col-sm-3">Mô tả</dt>
+                <dd class="col-sm-9">@Model.MoTa</dd>
+
+                <dt class="col-sm-3">Hình ảnh</dt>
+                <dd class="col-sm-9">
+                    <img src="@Url.Content("~/img/Products/" + Model.HinhAnh)" alt="Ảnh sản phẩm" class="img-thumbnail" style="max-width: 300px;" />
+                </dd>
+
+                <dt class="col-sm-3">Ghi chú</dt>
+                <dd class="col-sm-9">@Model.GhiChu</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="mt-4 d-flex gap-2">
+        <a asp-action="editproduct" asp-route-id="@Model?.MaSanPham" class="btn btn-success">
+            <i class="fas fa-edit"></i> Sửa
+        </a>
+        <a asp-action="index" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Quay về
+        </a>
+    </div>
+</div>

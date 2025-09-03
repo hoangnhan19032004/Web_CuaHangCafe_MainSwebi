@@ -1,0 +1,73 @@
+﻿@using Web_CuaHangCafe.Models
+@using X.PagedList.Mvc.Core
+@model X.PagedList.IPagedList<TbPhanHoi>
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Tiếp nhận phản hồi";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container mb-4">
+    <div class="row mb-3">
+        <div class="col-lg-8 col-md-12">
+            <h3 class="fw-semibold text-dark">Tiếp nhận phản hồi</h3>
+        </div>
+        <div class="col-lg-4 col-md-12">
+            <form asp-action="Search" method="get" class="input-group">
+                <input type="text" name="search" class="form-control" placeholder="Tìm kiếm..." autocomplete="off">
+                <button type="submit" class="btn btn-outline-secondary"><i class="fa fa-search"></i></button>
+            </form>
+        </div>
+    </div>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Message"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card shadow-sm rounded">
+        <div class="table-responsive p-3">
+            <table class="table align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Mã phản hồi</th>
+                        <th>Tiêu đề</th>
+                        <th>Số điện thoại</th>
+                        <th class="text-end">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>@item.TieuDe</td>
+                            <td>@item.SoDienThoai</td>
+                            <td class="text-end">
+                                <a class="btn btn-sm btn-outline-primary me-1" asp-action="Details" asp-route-id="@item.Id" asp-route-name="@item.TieuDe">
+                                    <i class="fas fa-eye"></i> Xem
+                                </a>
+                                <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">
+                                    <i class="fas fa-trash-alt"></i> Xoá
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="mt-3 d-flex justify-content-center">
+        @Html.PagedListPager(Model, page => Url.Action("Index", new { page = page }), new PagedListRenderOptions
+   {
+       MaximumPageNumbersToDisplay = 5,
+       LiElementClasses = new List<string> { "page-item" },
+       PageClasses = new List<string> { "page-link" }
+   })
+    </div>
+</div>

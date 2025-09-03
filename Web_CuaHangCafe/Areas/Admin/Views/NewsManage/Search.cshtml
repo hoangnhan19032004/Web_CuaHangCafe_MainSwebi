@@ -1,0 +1,79 @@
+﻿@using Web_CuaHangCafe.Models
+@using X.PagedList.Mvc.Core
+@model X.PagedList.IPagedList<TbTinTuc>
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Kết quả tìm kiếm";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container mb-4">
+    <div class="row align-items-center mb-3">
+        <div class="col-lg-8 col-md-12">
+            <h3 class="fw-semibold">
+                Kết quả tìm kiếm:
+                <span class="text-muted fst-italic">@ViewBag.search</span>
+            </h3>
+        </div>
+        <div class="col-lg-4 col-md-12">
+            <form asp-action="Search" method="get">
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control" placeholder="Tìm kiếm..." />
+                    <button class="btn btn-outline-primary" type="submit">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body table-responsive">
+            <table class="table table-striped align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col">Mã tin</th>
+                        <th scope="col">Tiêu đề</th>
+                        <th scope="col">Ngày đăng</th>
+                        <th scope="col" class="text-center">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.MaTinTuc</td>
+                                <td>@item.TieuDe</td>
+                                <td>@(item.NgayDang?.ToString("dd/MM/yyyy"))</td>
+                                <td class="text-center">
+                                    <a asp-action="Details" asp-route-id="@item.MaTinTuc" class="btn btn-sm btn-outline-primary me-1">Chi tiết</a>
+                                    <a asp-action="Edit" asp-route-id="@item.MaTinTuc" class="btn btn-sm btn-outline-success me-1">Sửa</a>
+                                    <a asp-action="Delete" asp-route-id="@item.MaTinTuc" class="btn btn-sm btn-outline-danger">Xoá</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">Không có kết quả phù hợp.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="mt-4 d-flex justify-content-center">
+        @Html.PagedListPager(Model, page => Url.Action("Search", new { page, search = ViewBag.search }),
+                 new PagedListRenderOptions
+        {
+            MaximumPageNumbersToDisplay = 5,
+            LiElementClasses = new List<string> { "page-item" },
+            PageClasses = new List<string> { "page-link" }
+        })
+    </div>
+</div>

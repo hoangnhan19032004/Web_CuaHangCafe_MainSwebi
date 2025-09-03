@@ -1,0 +1,45 @@
+﻿@model Web_CuaHangCafe.Models.TbHoaDonBan
+
+@{
+    ViewData["Title"] = "Xóa hóa đơn";
+}
+
+<h2 class="text-danger">Xóa hóa đơn</h2>
+
+<div class="alert alert-warning">
+    <strong>Bạn có chắc chắn muốn xóa hóa đơn sau không?</strong>
+</div>
+
+<div class="card shadow p-3 mb-3">
+    <dl class="row">
+        <dt class="col-sm-3">Số hóa đơn</dt>
+        <dd class="col-sm-9">@Model.SoHoaDon</dd>
+
+        <dt class="col-sm-3">Ngày bán</dt>
+        <dd class="col-sm-9">@Model.NgayBan?.ToString("dd/MM/yyyy")</dd>
+
+        <dt class="col-sm-3">Khách hàng</dt>
+        <dd class="col-sm-9">@Model.Customer?.TenKhachHang</dd>
+
+        <dt class="col-sm-3">Số điện thoại</dt>
+        <dd class="col-sm-9">@Model.Customer?.SdtKhachHang</dd>
+
+        <dt class="col-sm-3">Địa chỉ</dt>
+        <dd class="col-sm-9">@Model.Customer?.DiaChi</dd>
+
+        <dt class="col-sm-3">Tổng tiền</dt>
+        <dd class="col-sm-9">@string.Format("{0:N0} VNĐ", Model.TongTien ?? 0)</dd>
+    </dl>
+
+    <form asp-action="Delete" asp-route-id="@Model.MaHoaDon" method="post">
+        @Html.AntiForgeryToken()
+        <div class="form-group mt-4">
+            <button type="submit" class="btn btn-danger">
+                <i class="bi bi-trash"></i> Xác nhận xóa
+            </button>
+            <a asp-action="Index" class="btn btn-secondary ms-2">
+                <i class="bi bi-arrow-left-circle"></i> Quay lại
+            </a>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,79 @@
+﻿@using Web_CuaHangCafe.Models
+@using X.PagedList.Mvc.Core;
+@model X.PagedList.IPagedList<TbQuanTriVien>
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Quản lý tài khoản";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="fw-semibold text-dark">Quản lý tài khoản truy cập</h3>
+        <a asp-action="Create" class="btn btn-success shadow-sm">
+            <i class="fas fa-plus me-1"></i> Thêm mới
+        </a>
+    </div>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            @TempData["Message"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card shadow-sm rounded">
+        <div class="table-responsive">
+            <table class="table table-bordered mb-0 align-middle">
+                <thead class="table-light text-center">
+                    <tr>
+                        <th style="width: 10%">ID</th>
+                        <th style="width: 30%">Tên người dùng</th>
+                        <th style="width: 60%">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="3" class="text-center text-muted">Không có tài khoản nào.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="text-center">@item.Id</td>
+                                <td>@item.TenNguoiDung</td>
+                                <td>
+                                    <div class="d-flex flex-wrap gap-2 justify-content-center">
+                                        <a class="btn btn-primary btn-sm" asp-action="Edit" asp-route-id="@item.Id">
+                                            <i class="fas fa-edit me-1"></i> Sửa
+                                        </a>
+                                        <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id" onclick="return confirm('Bạn có chắc muốn xoá tài khoản này?');">
+                                            <i class="fas fa-trash-alt me-1"></i> Xoá
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="mt-4 d-flex justify-content-center">
+        @Html.PagedListPager(Model, page => Url.Action("Index", new { page }),
+                 new PagedListRenderOptions
+        {
+            MaximumPageNumbersToDisplay = 5,
+            LiElementClasses = new List<string> { "page-item" },
+            PageClasses = new List<string> { "page-link" },
+            UlElementClasses = new List<string> { "pagination", "justify-content-center" }
+        })
+    </div>
+</div>

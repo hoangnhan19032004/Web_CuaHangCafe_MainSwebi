@@ -1,0 +1,196 @@
+﻿@model IEnumerable<CartItem>
+
+@{
+    ViewData["Title"] = "Giỏ hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="shop-cart py-5">
+    <div class="container">
+        <h3 class="mb-4 fw-bold text-uppercase">Giỏ hàng của bạn</h3>
+
+        <div class="table-responsive shadow-sm border rounded">
+            <table class="table align-middle mb-0">
+                <thead class="table-light text-center">
+                    <tr>
+                        <th>Sản phẩm</th>
+                        <th>Size & Giá</th>
+                        <th>Số lượng</th>
+                        <th>Ghi chú</th>
+                        <th>Tổng</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="cart-items">
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center text-danger">Giỏ hàng trống</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr class="product-item"
+                                data-product-id="@item.MaSp"
+                                data-size="@item.Size"
+                                data-base-price="@item.DonGiaCoBan">
+                                <td class="d-flex align-items-center gap-3">
+                                    <img src="@Url.Content("../img/products/" + item.AnhSp)" alt="@item.TenSp" style="width:70px; height:70px; object-fit:cover;" class="rounded shadow-sm border" />
+                                    <div><strong>@item.TenSp</strong></div>
+                                </td>
+
+                                <td>
+                                    <div class="d-flex flex-column align-items-start">
+                                        <span class="text-primary fw-semibold cart__price">
+                                            @item.DonGia.ToString("n0") &#8363;
+                                        </span>
+                                        <div class="btn-group mt-2 size-select-group" role="group" data-product-id="@item.MaSp">
+                                            <input type="radio" class="btn-check size-radio" name="size-@item.MaSp" id="size-m-@item.MaSp" value="M" @(item.Size == "M" ? "checked" : "")>
+                                            <label class="btn btn-outline-primary btn-sm" for="size-m-@item.MaSp">Size M</label>
+
+                                            <input type="radio" class="btn-check size-radio" name="size-@item.MaSp" id="size-l-@item.MaSp" value="L" @(item.Size == "L" ? "checked" : "")>
+                                            <label class="btn btn-outline-primary btn-sm" for="size-l-@item.MaSp">Size L (+10k)</label>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <input type="number" class="form-control quantity-input text-center" data-product-id="@item.MaSp" value="@item.SoLuong" min="1" style="width:80px;" />
+                                </td>
+
+                                <td>
+                                    <input type="text" class="form-control note-input" data-product-id="@item.MaSp" value="@item.GhiChu" placeholder="Ghi chú (nếu có)" />
+                                </td>
+
+                                <td class="cart__total fw-bold text-end">
+                                    @item.ThanhTien.ToString("n0") &#8363;
+                                </td>
+
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-link text-danger removeItem" data-product-id="@item.MaSp">
+                                        <i class="fas fa-times fa-lg"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-lg-6">
+                <a asp-controller="Products" asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Tiếp tục mua hàng
+                </a>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-lg-4 offset-lg-8">
+                <div class="border p-4 rounded bg-light shadow-sm">
+                    <h5 class="fw-bold mb-3">Tổng tiền</h5>
+                    <ul class="list-unstyled mb-3">
+                        <li class="d-flex justify-content-between align-items-center">
+                            <span class="fw-medium">Tổng:</span>
+                            <span id="totalAmount">
+                                <span class="spinner-border spinner-border-sm d-none" id="cartLoading" role="status"></span>
+                                <span id="cartTotalValue">
+                                    @{
+                                        var total = Model.Sum(item => item.ThanhTien);
+                                        @($"{total:n0} &#8363;")
+                                    }
+                                </span>
+                            </span>
+                        </li>
+                    </ul>
+                    <a asp-action="Checkout" class="btn btn-success w-100">Thanh toán</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        const SIZE_PRICES = { 'M': 0, 'L': 10000 };
+
+        function updateCartPricesAndSyncServer() {
+            let total = 0;
+            document.getElementById('cartLoading').classList.remove('d-none');
+
+            document.querySelectorAll('.product-item').forEach(row => {
+                const productId = row.dataset.productId;
+                const size = row.querySelector('.size-radio:checked')?.value || "M";
+                const quantity = parseInt(row.querySelector('.quantity-input').value) || 1;
+                const basePrice = parseFloat(row.dataset.basePrice);
+                const note = row.querySelector('.note-input')?.value || "";
+
+                const extra = SIZE_PRICES[size] || 0;
+                const price = basePrice + extra;
+                const itemTotal = price * quantity;
+
+                row.querySelector('.cart__price').innerHTML = price.toLocaleString() + ' &#8363;';
+                row.querySelector('.cart__total').innerHTML = itemTotal.toLocaleString() + ' &#8363;';
+                total += itemTotal;
+
+                fetch('/Cart/UpdateCartItem', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `productId=${productId}&size=${size}&quantity=${quantity}&note=${encodeURIComponent(note)}`
+                }).then(res => res.json()).then(data => {
+                    if (!data.success) console.error(data.message || "Lỗi cập nhật");
+                });
+            });
+
+            setTimeout(() => {
+                document.getElementById('cartTotalValue').innerHTML = total.toLocaleString() + ' &#8363;';
+                document.getElementById('cartLoading').classList.add('d-none');
+            }, 300);
+        }
+
+        let debounceTimer;
+        document.addEventListener('change', function (e) {
+            if (
+                e.target.classList.contains('size-radio') ||
+                e.target.classList.contains('quantity-input') ||
+                e.target.classList.contains('note-input')
+            ) {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(updateCartPricesAndSyncServer, 300);
+            }
+        });
+
+        document.addEventListener('click', function (e) {
+            if (e.target.closest('.removeItem')) {
+                e.preventDefault();
+                const row = e.target.closest('.product-item');
+                const productId = row.dataset.productId;
+                const size = row.querySelector('.size-radio:checked').value;
+
+                fetch('/Cart/Remove', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `maSp=${productId}&size=${size}`
+                }).then(res => res.json()).then(data => {
+                    if (data.success) {
+                        row.remove();
+                        updateCartPricesAndSyncServer();
+                        if (document.querySelectorAll('.product-item').length === 0) {
+                            document.getElementById('cart-items').innerHTML = `
+                                <tr>
+                                    <td colspan="6" class="text-center text-danger">Giỏ hàng trống</td>
+                                </tr>`;
+                        }
+                    } else {
+                        alert(data.message || "Không thể xóa sản phẩm.");
+                    }
+                });
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', updateCartPricesAndSyncServer);
+    </script>
+}
