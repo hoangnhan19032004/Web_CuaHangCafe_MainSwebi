@@ -1,8 +1,8 @@
 # Swebi Coffee
 
-**Dự án:** Trang quản lý cửa hàng - Bài tập lớn môn Thực tập chuyên môn
+**Dự án:** Trang quản lý cửa hàng cà phê - Swebi Coffee
 
-**Chủ sở hữu:** Phan Nguyễn Hoàng Nhân — 201200304
+**Chủ sở hữu:** Phan Nguyễn Hoàng Nhân — 2280602184
 
 **Năm:** 2023 — Trường Đại học Công nghệ Thành phố Hồ Chí Minh (HUTECH)
 
@@ -107,6 +107,4 @@ Hai phần chính của hệ thống:
 Phan Nguyễn Hoàng Nhân — Sinh viên, Trường Đại học Công nghệ Thành phố Hồ Chí Minh (HUTECH)
 
 ---
-
-*Đã chuyển tên dự án và cập nhật thông tin chủ sở hữu theo yêu cầu.*
 
