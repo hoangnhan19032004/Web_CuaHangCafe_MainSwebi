@@ -84,7 +84,7 @@ Hai phần chính của hệ thống:
    * Nếu muốn đổi tên project/namespace: đổi tên project file (`.csproj`) và cập nhật namespace trong mã nguồn (cẩn thận với EF Migrations).
 5. **Cập nhật trang giới thiệu & thông tin tác giả:**
 
-   * Chèn dòng: `Thiết kế và phát triển bởi: Phan Nguyễn Hoàng Nhân (201200304)` vào About/README và footer.
+   * Chèn dòng: `Thiết kế và phát triển bởi: Phan Nguyễn Hoàng Nhân (2280602184)` vào About/README và footer.
 6. **Logo & hình ảnh:**
 
    * Thay file logo trong `wwwroot/images` bằng logo Swebi Coffee (kích thước tối ưu 256×256 hoặc responsive SVG).
