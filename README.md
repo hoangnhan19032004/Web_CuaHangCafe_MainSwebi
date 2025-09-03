@@ -1,16 +1,16 @@
 # Swebi Coffee
 
-**Dự án:** Trang quản lý cửa hàng cà phê - Swebi Coffee
+**Dự án:** Trang quản lý cửa hàng cà phê - Đồ án môn Lập Trình Web
 
 **Chủ sở hữu:** Phan Nguyễn Hoàng Nhân — 2280602184
 
-**Năm:** 2023 — Trường Đại học Công nghệ Thành phố Hồ Chí Minh (HUTECH)
+**Năm:** 2025 — Trường Đại học Công nghệ Thành phố Hồ Chí Minh (HUTECH)
 
 ---
 
 ## Mô tả
 
-Trang web quản lý cửa hàng (Swebi Coffee) được xây dựng để làm bài tập lớn và phục vụ đánh giá môn Thực tập chuyên môn. Ứng dụng được xây dựng bằng **ASP.NET Core (.NET 8)** theo mô hình **MVC**, sử dụng **SQL Server** làm hệ quản trị cơ sở dữ liệu.
+Trang web quản lý cửa hàng (Swebi Coffee) được xây dựng để làm bài tập lớn và phục vụ đánh giá môn Lập Trình Web. Ứng dụng được xây dựng bằng **ASP.NET Core (.NET 8)** theo mô hình **MVC**, sử dụng **SQL Server** làm hệ quản trị cơ sở dữ liệu.
 
 Hai phần chính của hệ thống:
 
