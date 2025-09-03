@@ -42,7 +42,7 @@ Hai phần chính của hệ thống:
 ## Hình ảnh minh họa
 
 * Trang chủ
-  ![Trang chủ](https://github.com/ngquy02/ASP.NET_CuaHangCafe/assets/85392867/d434e9a6-9241-45e3-bea1-6914a3f987d4)
+  ![Trang chủ](https://i.postimg.cc/gjgd5KD4/Screenshot-2025-09-03-200638.png)
 
 * Trang sản phẩm
   ![Trang sản phẩm](https://github.com/ngquy02/ASP.NET_CuaHangCafe/assets/85392867/a5386a74-56d2-484c-ad6b-95799873e89f)
