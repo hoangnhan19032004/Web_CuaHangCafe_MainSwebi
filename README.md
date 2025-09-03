@@ -45,19 +45,19 @@ Hai phần chính của hệ thống:
   ![Trang chủ](https://i.postimg.cc/gjgd5KD4/Screenshot-2025-09-03-200638.png)
 
 * Trang sản phẩm
-  ![Trang sản phẩm](https://github.com/ngquy02/ASP.NET_CuaHangCafe/assets/85392867/a5386a74-56d2-484c-ad6b-95799873e89f)
+  ![Trang sản phẩm](https://i.postimg.cc/VLwDH8r7/Screenshot-2025-09-03-201155.png)
 
 * Trang chi tiết sản phẩm
-  ![Chi tiết sản phẩm](https://github.com/ngquy02/ASP.NET_CuaHangCafe/assets/85392867/8acbc68e-40e8-4d31-bef3-0c22b469b7eb)
+  ![Chi tiết sản phẩm](https://i.postimg.cc/zGKDDTXD/Screenshot-2025-09-03-201431.png)
 
 * Trang giỏ hàng
-  ![Giỏ hàng](https://github.com/ngquy02/ASP.NET_CuaHangCafe/assets/85392867/af99f488-15df-4b48-95c2-cf1fcd26cd80)
+  ![Giỏ hàng](https://i.postimg.cc/0rgghHSY/Screenshot-2025-09-03-201543.png)
 
 * Trang thanh toán
-  ![Thanh toán](https://github.com/ngquy02/ASP.NET_CuaHangCafe/assets/85392867/888390d5-4da7-4df3-a70e-57346b40dd26)
+  ![Thanh toán](https://i.postimg.cc/HLLpwR9n/Screenshot-2025-09-03-201645.png)
 
 * Trang quản trị
-  ![Admin](https://github.com/ngquy02/ASP.NET_CuaHangCafe/assets/85392867/b959ecf8-a95c-49f8-a113-733d889cec0d)
+  ![Admin](https://i.postimg.cc/vB9CftkD/Screenshot-2025-09-03-201756.png)
 
 ---
 
